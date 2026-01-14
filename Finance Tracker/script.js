@@ -1,20 +1,30 @@
 let transactions = [];
 
 let income = 0;
-let expenses = 0;
+let expense = 0;
 
 const addBtn = document.getElementById('addBtn');
 
 addBtn.addEventListener('click', function() {
 
-    // Get input values
+
+   
+    
+
+    // Get input values .value read krne ke liye hota hai
 
     const date = document.getElementById('date').value;
     const amount = Number(document.getElementById('amount').value);
     const type = document.getElementById('type').value;
     const mode = document.getElementById('mode').value; 
 
-    // Save transaction
+
+     if(!date || amount <= 0 || isNaN(amount)) {
+        alert('Please enter valid date and amount');
+        return;
+     }
+
+    // Save transaction remember these for future use
 
     const transaction = {
         date: date,
@@ -25,7 +35,7 @@ addBtn.addEventListener('click', function() {
 
     transactions.push(transaction);
 
-    // add row to table
+    // add row to table (tr - table row) jb bhi add krna hota hai table me, new row apne app add hojayega
 
     const transactionBody = document.getElementById('transactionBody');
     const row = document.createElement('tr');
@@ -40,14 +50,18 @@ addBtn.addEventListener('click', function() {
     transactionBody.appendChild(row);
 
     // update totals
-    if (type === 'Income') {
+    if (type === 'income') {
         income += amount;
     } else {
-        expenses += amount;
+        expense += amount;
     }
 
-    document.getElementById('income').innerText = "Income: ₹${income};"
-    document.getElementById('expenses').innerText = "Expenses: ₹${expenses};"
-    document.getElementById('total').innerText = "Total Balance: ₹${income - expenses};"
+    document.getElementById('income').innerText = `Income: ₹${income}`;
+    document.getElementById('expense').innerText = `Expenses: ₹${expense}`;
+    document.getElementById('total').innerText = `Total Balance: ₹${income - expense}`;
+
+
+    getElementById('amount').value = '';
+    getElementById('date').value = '';
 
 });
