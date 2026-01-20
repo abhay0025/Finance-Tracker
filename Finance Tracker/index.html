@@ -43,29 +43,43 @@
         </table>
     </section>
 
-    <section class="add-transaction">
+    <button id="openModal" class="fab">+</button>
 
-        <input type="date" id="date">
+    <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal">
 
-        <input type="number" id="amount" placeholder="Amount">
+            <h2>Add Transaction</h2>
 
-        <select id="type">
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-        </select>
+            <div class="type-buttons">
+                <button data-type="income">Income</button>
+                <button data-type="expense">Expense</button>
+                <button data-type="transfer">Transfer</button>
+            </div>
 
-        <select id="mode">
-            <option value="Cash">Cash</option>
-            <option value="Credit Card">Credit Card</option>
-            <option value="Debit Card">Debit Card</option>
-            <option value="Online Banking/UPI">Online Banking/UPI</option>
+            <input type="date" id="modalDate">
 
-        </select>
+            <input type="number" id="modalAmount" placeholder="Amount">
 
-        <button id="addBtn">+</button>
-    </section>
+            <select id="modalMode">
+                <option value="">Select Payment Mode</option>
+                <option value="Cash">Cash</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="Online Banking">Online Banking</option>
+                <option value="UPI">UPI</option>
+            </select>
 
-    <script src="script.js"></script>
+            <input type="text" id="modalNotes" placeholder="Notes (optional)">
+
+            <div class="modal-actions">
+                <button id="saveTransaction" type="button">Save</button>
+                <button id="closeModal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+
+<script src="script.js"></script>
 </body>
 
 </html>

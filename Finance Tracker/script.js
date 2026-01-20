@@ -1,58 +1,124 @@
-let transactions = [];
 
 let income = 0;
 let expense = 0;
 
-const addBtn = document.getElementById('addBtn');
-
-addBtn.addEventListener('click', function() {
+let selectedType = null; 
 
 
-   
-    
+const openModalBtn = document.getElementById('openModal');
+const modalOverlay = document.getElementById('modalOverlay');
+const closeModalBtn = document.getElementById('closeModal');
+const saveBtn = document.getElementById('saveTransaction');
 
-    // Get input values .value read krne ke liye hota hai
-
-    const date = document.getElementById('date').value;
-    const amount = Number(document.getElementById('amount').value);
-    const type = document.getElementById('type').value;
-    const mode = document.getElementById('mode').value; 
+const typeButtons = document.querySelectorAll('.type-buttons button');
 
 
-     if(!date || amount <= 0 || isNaN(amount)) {
-        alert('Please enter valid date and amount');
+function resetModal(){
+    selectedType = null;
+    document.getElementById('modalDate').value = '';
+    document.getElementById('modalAmount').value = '';
+    document.getElementById('modalMode').selectedIndex = 0;
+    document.getElementById('modalNotes').value = '';
+
+    typeButtons.forEach(btn => btn.classList.remove('active'));
+    validateModal();
+}
+
+function validateModal() {
+    const date = document.getElementById('modalDate').value;
+    const amount = Number(document.getElementById('modalAmount').value);
+    const mode = document.getElementById('modalMode').value;
+
+    saveBtn.disabled = !(selectedType && date && amount > 0 && mode && selectedType);
+}
+
+openModalBtn.addEventListener('click', () => {
+    resetModal();
+    modalOverlay.classList.remove('hidden');
+});
+
+closeModalBtn.addEventListener('click', () => {
+    modalOverlay.classList.add('hidden');
+});
+
+modalOverlay.addEventListener('click', (e) => {
+    if(e.target === modalOverlay) {
+        modalOverlay.classList.add('hidden');
+    }
+});
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && !modalOverlay.classList.contains('hidden')) {
+        modalOverlay.classList.add('hidden');
+    }
+});
+
+typeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+
+        // remove active from all buttons and add to clicked button
+        typeButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        // store selected type 
+        selectedType = button.dataset.type;
+        validateModal();
+    });
+});
+
+
+document.getElementById('modalDate').addEventListener('input', validateModal);
+document.getElementById('modalAmount').addEventListener('input', validateModal);
+document.getElementById('modalMode').addEventListener('change', validateModal);
+
+saveBtn.addEventListener('click', () => {
+
+    console.log("Save button clicked");
+
+     // Get input values .value read krne ke liye hota hai
+    const date = document.getElementById('modalDate').value;
+    const amount = Number(document.getElementById('modalAmount').value);
+    const mode = document.getElementById('modalMode').value; 
+
+    if(!selectedType) {
+        alert('Please select transaction type.');
+        return;
+    }
+
+
+     if(!date || amount <= 0 || !mode) {
+        alert('Please fill all required fields correctly.');
         return;
      }
 
-    // Save transaction remember these for future use
 
-    const transaction = {
-        date: date,
-        amount: amount,
-        type: type,
-        mode: mode
-    };
+     const transaction = {
+        date,
+        amount,
+        type: selectedType,
+        mode
+     };
 
-    transactions.push(transaction);
 
-    // add row to table (tr - table row) jb bhi add krna hota hai table me, new row apne app add hojayega
+      // add row to table (tr - table row) jb bhi add krna hota hai table me, new row apne app add hojayega
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${date}</td>
+            <td>${amount.toFixed(2)}</td>
+            <td>${selectedType}</td>
+            <td>${mode}</td>
+        `;
+        document.getElementById('transactionBody').appendChild(row);
+    
+ 
 
-    const transactionBody = document.getElementById('transactionBody');
-    const row = document.createElement('tr');
+    // transactions.push(transaction);
 
-    row.innerHTML = `
-        <td>${date}</td>
-        <td>${amount.toFixed(2)}</td>
-        <td>${type}</td>
-        <td>${mode}</td>
-    `;
-
-    transactionBody.appendChild(row);
+   
 
     // update totals
-    if (type === 'income') {
+    if (selectedType === 'income') {
         income += amount;
-    } else {
+    } else if (selectedType === 'expense') {
         expense += amount;
     }
 
@@ -61,7 +127,7 @@ addBtn.addEventListener('click', function() {
     document.getElementById('total').innerText = `Total Balance: ₹${income - expense}`;
 
 
-    getElementById('amount').value = '';
-    getElementById('date').value = '';
+    // close modal
+    modalOverlay.classList.add('hidden');
 
 });
